@@ -1,5 +1,9 @@
 # Quarterdeck
 
+[![Tests](https://github.com/TailraceHQ/quarterdeck/actions/workflows/tests.yml/badge.svg)](https://github.com/TailraceHQ/quarterdeck/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Host: Claude Code](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://www.anthropic.com/claude-code)
+
 A live task board for the orchestrator. One dashboard for every task you gave Claude Code, across
 every repo — with priorities, statuses you can change yourself, a reply box that reaches the model,
 per-session context %, and a strip showing what subagents are doing.
@@ -80,3 +84,8 @@ the window. Override per model with `windowByModel`.
 The board renders in a browser and `tasks.md` is plaintext on disk. Subagent tracking stores only
 agent type, model, and the short description — never the prompt body or tool output. The ruleset
 tells the model never to write secrets or file contents to the board.
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and pull
+request guidelines. Quarterdeck is available under the [MIT License](LICENSE).
