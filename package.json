@@ -1,0 +1,14 @@
+{
+  "name": "quarterdeck",
+  "version": "0.1.0",
+  "description": "A live task board for the orchestrator: one dashboard for every task you gave Claude Code, across every repo.",
+  "type": "module",
+  "bin": { "qd": "bin/qd.js" },
+  "scripts": {
+    "test": "node --test test/",
+    "start": "node bin/qd.js serve --foreground"
+  },
+  "engines": { "node": ">=22" },
+  "license": "MIT",
+  "private": true
+}
