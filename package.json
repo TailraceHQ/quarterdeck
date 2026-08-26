@@ -5,7 +5,7 @@
   "type": "module",
   "bin": { "qd": "bin/qd.js" },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test test/*.test.js",
     "start": "node bin/qd.js serve --foreground"
   },
   "engines": { "node": ">=22" },
