@@ -1,3 +1,4 @@
+// captureReplyDrafts / restoreReplyDrafts are prepended from reply-drafts.js when the page is served.
 const $ = (sel) => document.querySelector(sel);
 const board = $('#board');
 let repoFilter = localStorage.getItem('qd.repo') || '';
@@ -97,6 +98,7 @@ function section(title, items, opts = {}) {
 
 function render() {
   if (!state) return;
+  const drafts = captureReplyDrafts(board, document.activeElement);
   const keep = (t) => !repoFilter || t.repo === repoFilter;
 
   $('#repo-filters').innerHTML = [
@@ -141,6 +143,7 @@ function render() {
   }
 
   board.innerHTML = parts.join('');
+  restoreReplyDrafts(board, drafts);
   board.setAttribute('aria-busy', 'false');
   $('#stamp').textContent = `${state.counts.open} open · ${state.counts.p1} P1`;
 }

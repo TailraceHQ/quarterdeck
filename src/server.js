@@ -60,7 +60,10 @@ export function createServer() {
       if (p === '/' || p === '/index.html') {
         const html = page(
           fs.readFileSync(path.join(WEB, 'board.css'), 'utf8'),
-          fs.readFileSync(path.join(WEB, 'board.js'), 'utf8'),
+          [
+            fs.readFileSync(path.join(WEB, 'reply-drafts.js'), 'utf8'),
+            fs.readFileSync(path.join(WEB, 'board.js'), 'utf8'),
+          ].join('\n'),
         );
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
         return res.end(html);

@@ -50,3 +50,16 @@ test('page embeds the supplied assets without external hosting', () => {
   assert.match(html, /<style>body \{ color: navy; \}<\/style>/);
   assert.match(html, /<script type="module">window\.ready = true;<\/script>/);
 });
+
+test('dashboard script inlines reply-draft helpers before the board renderer', () => {
+  const js = [
+    fs.readFileSync(new URL('../web/reply-drafts.js', import.meta.url), 'utf8'),
+    fs.readFileSync(new URL('../web/board.js', import.meta.url), 'utf8'),
+  ].join('\n');
+  const html = page('', js);
+
+  const script = html.match(/<script type="module">([\s\S]*)<\/script>/)[1];
+  assert.ok(script.indexOf('export function captureReplyDrafts') < script.indexOf('function render()'));
+  assert.match(script, /const drafts = captureReplyDrafts\(board, document\.activeElement\)/);
+  assert.match(script, /restoreReplyDrafts\(board, drafts\)/);
+});
