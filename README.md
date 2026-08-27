@@ -16,11 +16,23 @@ Node ≥22 only.
 ## Install
 
 ```sh
-node install.js      # symlinks the skill, registers hooks, puts `qd` on PATH
+node install.js      # symlinks the skills, registers hooks, puts `qd` on PATH
 qd serve && qd open
 ```
 
-Then restart Claude Code so the hooks load. `node install.js --uninstall` reverses it.
+Then restart Claude Code so the hooks and slash commands load. `node install.js --uninstall` reverses it.
+
+## Start and stop
+
+The board is a Node process. Closing the browser tab does **not** stop it.
+
+```sh
+qd serve && qd open   # start (detached) and open the dashboard
+qd stop               # stop the server
+qd status             # whether it is running
+```
+
+In Claude Code, `/quarterdeck-stop` runs `qd stop`. That is a separate slash command from `/quarterdeck` (and `/board`), which is the task-board skill — there is no `/quarterdeck stop` subcommand.
 
 ## How it works
 
@@ -65,6 +77,8 @@ qd add "fix the auth redirect" --repo Ciciro   # P2 by default
 qd set T-0004 --status blocked --blocked-on you --next "need the staging password"
 qd log T-0004 "reproduced on staging"
 qd list --open
+qd serve && qd open
+qd stop
 qd status
 ```
 

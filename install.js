@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Wires quarterdeck into Claude Code: symlinks the skill, registers the hooks,
+ * Wires quarterdeck into Claude Code: symlinks the skills, registers the hooks,
  * and puts `qd` on PATH. Idempotent - safe to re-run after a git pull.
  */
 import fs from 'node:fs';
@@ -68,9 +68,11 @@ function patchSettings() {
   return true;
 }
 
-function linkSkill() {
+const SKILLS = ['quarterdeck', 'quarterdeck-stop'];
+
+function linkSkill(name) {
   const dir = path.join(CLAUDE_HOME, 'skills');
-  const dest = path.join(dir, 'quarterdeck');
+  const dest = path.join(dir, name);
   fs.mkdirSync(dir, { recursive: true });
   try {
     if (fs.lstatSync(dest)) fs.rmSync(dest, { recursive: true, force: true });
@@ -78,7 +80,7 @@ function linkSkill() {
     /* nothing there yet */
   }
   if (uninstall) return null;
-  fs.symlinkSync(path.join(REPO, 'skills', 'quarterdeck'), dest, 'dir');
+  fs.symlinkSync(path.join(REPO, 'skills', name), dest, 'dir');
   return dest;
 }
 
@@ -102,8 +104,10 @@ function linkBin() {
 
 ensureDirs();
 console.log(uninstall ? 'Removing quarterdeck…' : 'Installing quarterdeck…');
-const skill = linkSkill();
-console.log(`  skill    ${skill || 'removed'}`);
+for (const name of SKILLS) {
+  const skill = linkSkill(name);
+  console.log(`  skill    ${name.padEnd(18)} ${skill || 'removed'}`);
+}
 const bin = linkBin();
 console.log(`  cli      ${bin || 'removed'}`);
 const ok = patchSettings();
@@ -113,6 +117,7 @@ if (!uninstall) {
   const onPath = (process.env.PATH || '').split(':').includes(path.join(os.homedir(), '.local', 'bin'));
   console.log(`\nDone. Board: http://localhost:${config().port}`);
   console.log('Start it with:  qd serve   (then `qd open`)');
+  console.log('Stop it with:   qd stop    (or /quarterdeck-stop in Claude Code)');
   if (!onPath) console.log('\nNote: ~/.local/bin is not on your PATH. Add it, or call bin/qd.js directly.');
-  console.log('Restart Claude Code so the new hooks load.');
+  console.log('Restart Claude Code so the new hooks and slash commands load.');
 }
