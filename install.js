@@ -68,7 +68,21 @@ function patchSettings() {
   return true;
 }
 
-const SKILLS = ['quarterdeck', 'quarterdeck-stop'];
+const SKILLS = ['quarterdeck'];
+const RETIRED_SKILLS = ['quarterdeck-stop'];
+
+function unlinkRetired() {
+  for (const name of RETIRED_SKILLS) {
+    const dest = path.join(CLAUDE_HOME, 'skills', name);
+    try {
+      fs.lstatSync(dest);
+      fs.rmSync(dest, { recursive: true, force: true });
+      console.log(`  skill    ${name.padEnd(18)} removed`);
+    } catch {
+      /* nothing there */
+    }
+  }
+}
 
 function linkSkill(name) {
   const dir = path.join(CLAUDE_HOME, 'skills');
@@ -104,6 +118,7 @@ function linkBin() {
 
 ensureDirs();
 console.log(uninstall ? 'Removing quarterdeck…' : 'Installing quarterdeck…');
+unlinkRetired();
 for (const name of SKILLS) {
   const skill = linkSkill(name);
   console.log(`  skill    ${name.padEnd(18)} ${skill || 'removed'}`);
@@ -117,7 +132,7 @@ if (!uninstall) {
   const onPath = (process.env.PATH || '').split(':').includes(path.join(os.homedir(), '.local', 'bin'));
   console.log(`\nDone. Board: http://localhost:${config().port}`);
   console.log('Start it with:  qd serve   (then `qd open`)');
-  console.log('Stop it with:   qd stop    (or /quarterdeck-stop in Claude Code)');
+  console.log('Stop it with:   qd stop    (or /quarterdeck stop in Claude Code)');
   if (!onPath) console.log('\nNote: ~/.local/bin is not on your PATH. Add it, or call bin/qd.js directly.');
   console.log('Restart Claude Code so the new hooks and slash commands load.');
 }

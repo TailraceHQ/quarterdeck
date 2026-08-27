@@ -6,24 +6,32 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const stopJs = fileURLToPath(new URL('../skills/quarterdeck-stop/stop.js', import.meta.url));
-const skillMd = fileURLToPath(new URL('../skills/quarterdeck-stop/SKILL.md', import.meta.url));
+const stopIfJs = fileURLToPath(new URL('../skills/quarterdeck/stop-if.js', import.meta.url));
+const skillMd = fileURLToPath(new URL('../skills/quarterdeck/SKILL.md', import.meta.url));
 
-test('stop.js reports not running when no server is up', () => {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qd-stop-'));
-  const result = spawnSync(process.execPath, [stopJs], {
+function runStopIf(args, env) {
+  return spawnSync(process.execPath, [stopIfJs, ...args], {
     encoding: 'utf8',
-    env: { ...process.env, QD_HOME: tmp },
+    env: { ...process.env, ...env },
   });
+}
 
-  assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /not running/);
+test('stop-if.js is a no-op unless the first argument is stop', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qd-stop-'));
+  const env = { QD_HOME: tmp };
+  const skipped = runStopIf(['reconcile'], env);
+  assert.equal(skipped.status, 0, skipped.stderr);
+  assert.equal(skipped.stdout, '');
+
+  const stopped = runStopIf(['stop'], env);
+  assert.equal(stopped.status, 0, stopped.stderr);
+  assert.match(stopped.stdout, /not running/);
 });
 
-test('quarterdeck-stop skill is a user-only slash command that runs stop.js', () => {
+test('quarterdeck skill documents /quarterdeck stop and injects stop-if.js', () => {
   const text = fs.readFileSync(skillMd, 'utf8');
-  assert.match(text, /^disable-model-invocation:\s*true$/m);
-  assert.match(text, /\/quarterdeck-stop/);
-  assert.match(text, /node \$\{CLAUDE_SKILL_DIR\}\/stop\.js/);
-  assert.doesNotMatch(text, /\/quarterdeck stop/);
+  assert.match(text, /argument-hint: "\[stop /);
+  assert.match(text, /\/quarterdeck stop/);
+  assert.match(text, /node \$\{CLAUDE_SKILL_DIR\}\/stop-if\.js \$ARGUMENTS/);
+  assert.match(text, /There is no `\/quarterdeck-stop` command/);
 });

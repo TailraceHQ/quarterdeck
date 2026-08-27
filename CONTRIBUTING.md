@@ -20,7 +20,7 @@ qd serve && qd open
 qd stop            # stops a detached `qd serve` (closing the browser does not)
 ```
 
-In Claude Code, `/quarterdeck-stop` is the slash command for `qd stop`. `/quarterdeck` is the task-board skill, not a server control command.
+In Claude Code, `/quarterdeck stop` (or `/board stop`) runs `qd stop`.
 
 Quarterdeck writes state beneath `~/.claude/quarterdeck` by default. Set
 `QD_HOME` to a temporary directory when testing changes manually:
