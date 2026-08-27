@@ -1,14 +1,14 @@
 ---
 name: quarterdeck
 description: >-
-  The live task board that tracks every task the user has given you, across every repo, with
-  priorities, statuses, and a reply channel from the dashboard. Use when the user invokes /board,
-  asks where something stands, asks what is in flight or what needs them, says to add/reopen/close
-  or re-prioritise a task, or when you need to reconcile the board after doing work outside it.
+  The live task board that tracks every task you gave Claude Code, across every repo.
+  Use when the user invokes /board or /quarterdeck, including `/quarterdeck stop` to stop
+  the board server, or asks where something stands, what is in flight, or what needs them.
   The board's write triggers are already injected at session start; load this for the full contract.
 user-invocable: true
+allowed-tools: Bash(node ${CLAUDE_SKILL_DIR}/stop-if.js *)
 metadata:
-  argument-hint: "[reconcile | add <title> | <question about board state>]"
+  argument-hint: "[stop | reconcile | add <title> | <question about board state>]"
 ---
 
 # quarterdeck
@@ -25,6 +25,9 @@ Run `qd --help` for the current flag surface — it is the source of truth over 
 
 ## Invocation modes
 
+- **`/quarterdeck stop`** (also `/board stop`) — stop the board HTTP server. Closing the
+  browser tab does **not** stop it. Equivalent to `qd stop`. Start it again with `qd serve`
+  or `qd open`. There is no `/quarterdeck-stop` command.
 - **`/board`** with no argument — reconcile and report. Read the board, compare it against what has
   actually happened in this session, fix anything stale, then give the report contract below.
 - **`/board add <title>`** — open a task from the user's words, applying the priority table.
@@ -32,9 +35,12 @@ Run `qd --help` for the current flag surface — it is the source of truth over 
 - **No invocation** — the standing triggers injected at session start still apply. You do not need
   this skill to do ordinary upkeep.
 
-This skill does **not** start or stop the board server. There is no `/quarterdeck stop`
-subcommand. Stop the process with `/quarterdeck-stop` or `qd stop`. Closing the browser
-tab does not stop it. Start it with `qd serve` or `qd open`.
+If the first argument is `stop`, the server has already been stopped. Result:
+
+!`node ${CLAUDE_SKILL_DIR}/stop-if.js $ARGUMENTS`
+
+If that result is non-empty, report it in one line and do not reconcile, add, or answer a board
+question. Otherwise ignore an empty result and follow the modes above.
 
 ## Priority
 

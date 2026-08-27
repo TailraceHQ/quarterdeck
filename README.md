@@ -32,7 +32,8 @@ qd stop               # stop the server
 qd status             # whether it is running
 ```
 
-In Claude Code, `/quarterdeck-stop` runs `qd stop`. That is a separate slash command from `/quarterdeck` (and `/board`), which is the task-board skill — there is no `/quarterdeck stop` subcommand.
+In Claude Code, `/quarterdeck stop` (or `/board stop`) runs `qd stop`. That is an argument to the
+existing `/quarterdeck` skill, not a separate `/quarterdeck-stop` command.
 
 ## How it works
 
