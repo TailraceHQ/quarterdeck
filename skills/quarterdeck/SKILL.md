@@ -32,6 +32,10 @@ Run `qd --help` for the current flag surface — it is the source of truth over 
 - **No invocation** — the standing triggers injected at session start still apply. You do not need
   this skill to do ordinary upkeep.
 
+This skill does **not** start or stop the board server. There is no `/quarterdeck stop`
+subcommand. Stop the process with `/quarterdeck-stop` or `qd stop`. Closing the browser
+tab does not stop it. Start it with `qd serve` or `qd open`.
+
 ## Priority
 
 Assign once, at creation. The user's hand-set priority always wins — never lower one silently.
