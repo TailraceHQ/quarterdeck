@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/header.jpg" alt="Quarterdeck — Your mission control for agents and orchestrators" width="100%">
+</p>
+
 # Quarterdeck
 
 [![Tests](https://github.com/TailraceHQ/quarterdeck/actions/workflows/tests.yml/badge.svg)](https://github.com/TailraceHQ/quarterdeck/actions/workflows/tests.yml)
